@@ -1,7 +1,7 @@
 import React from "react";
 import PreviewCompatibleImage, { ImageInfo } from "./PreviewCompatibleImage";
 
-interface Item extends ImageInfo {
+export interface Item extends ImageInfo {
   text: string;
 }
 

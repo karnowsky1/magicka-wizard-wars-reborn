@@ -10,11 +10,11 @@ export interface Frontmatter {
   featuredimage: Image;
 }
 
-interface CustomNode extends Node {
+export interface CustomNode extends Node {
   frontmatter: Frontmatter;
 }
 
-interface Post {
+export interface Post {
   node: CustomNode;
 }
 

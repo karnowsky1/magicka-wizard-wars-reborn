@@ -1,13 +1,43 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { graphql } from 'gatsby'
-import Layout from '../components/Layout'
-import Features from '../components/Features'
-import Testimonials from '../components/Testimonials'
-import Pricing from '../components/Pricing'
-import PreviewCompatibleImage from '../components/PreviewCompatibleImage'
+import React from "react";
+import PropTypes from "prop-types";
+import { graphql } from "gatsby";
+import Layout from "../components/Layout";
+import Features, { Item } from "../components/Features";
+import Testimonials, { Testimonial } from "../components/Testimonials";
+import Pricing, { Price } from "../components/Pricing";
+import PreviewCompatibleImage, {
+  Image,
+  ImageInfo
+} from "../components/PreviewCompatibleImage";
 
-export const ProductPageTemplate = ({
+export type Img = Image | string;
+export type ImgInfo = ImageInfo | string;
+
+export interface ProductPageTemplateProps {
+  image: Img;
+  title: string;
+  heading: string;
+  description: string;
+  intro: {
+    blurbs: Item[];
+  };
+  main: {
+    heading: string;
+    description: string;
+    image1: ImgInfo;
+    image2: ImgInfo;
+    image3: ImgInfo;
+  };
+  testimonials: Testimonial[];
+  fullImage: Img;
+  pricing: {
+    heading: string;
+    description: string;
+    plans: Price[];
+  };
+}
+
+export const ProductPageTemplate: React.FC<ProductPageTemplateProps> = ({
   image,
   title,
   heading,
@@ -16,24 +46,26 @@ export const ProductPageTemplate = ({
   main,
   testimonials,
   fullImage,
-  pricing,
+  pricing
 }) => (
   <div className="content">
     <div
       className="full-width-image-container margin-top-0"
       style={{
         backgroundImage: `url(${
-          !!image.childImageSharp ? image.childImageSharp.fluid.src : image
-        })`,
+          typeof image !== "string" && image.childImageSharp
+            ? image.childImageSharp.fluid.src
+            : image
+        })`
       }}
     >
       <h2
         className="has-text-weight-bold is-size-1"
         style={{
-          boxShadow: '0.5rem 0 0 #f40, -0.5rem 0 0 #f40',
-          backgroundColor: '#f40',
-          color: 'white',
-          padding: '1rem',
+          boxShadow: "0.5rem 0 0 #f40, -0.5rem 0 0 #f40",
+          backgroundColor: "#f40",
+          color: "white",
+          padding: "1rem"
         }}
       >
         {title}
@@ -64,18 +96,24 @@ export const ProductPageTemplate = ({
                   <div className="tile">
                     <div className="tile is-parent is-vertical">
                       <article className="tile is-child">
-                        <PreviewCompatibleImage imageInfo={main.image1} />
+                        {typeof main.image1 !== "string" && (
+                          <PreviewCompatibleImage imageInfo={main.image1} />
+                        )}
                       </article>
                     </div>
                     <div className="tile is-parent">
                       <article className="tile is-child">
-                        <PreviewCompatibleImage imageInfo={main.image2} />
+                        {typeof main.image2 !== "string" && (
+                          <PreviewCompatibleImage imageInfo={main.image2} />
+                        )}
                       </article>
                     </div>
                   </div>
                   <div className="tile is-parent">
                     <article className="tile is-child">
-                      <PreviewCompatibleImage imageInfo={main.image3} />
+                      {typeof main.image3 !== "string" && (
+                        <PreviewCompatibleImage imageInfo={main.image3} />
+                      )}
                     </article>
                   </div>
                 </div>
@@ -85,10 +123,10 @@ export const ProductPageTemplate = ({
                 className="full-width-image-container"
                 style={{
                   backgroundImage: `url(${
-                    fullImage.childImageSharp
+                    typeof fullImage !== "string" && fullImage.childImageSharp
                       ? fullImage.childImageSharp.fluid.src
                       : fullImage
-                  })`,
+                  })`
                 }}
               />
               <h2 className="has-text-weight-semibold is-size-2">
@@ -102,34 +140,20 @@ export const ProductPageTemplate = ({
       </div>
     </section>
   </div>
-)
+);
 
-ProductPageTemplate.propTypes = {
-  image: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  title: PropTypes.string,
-  heading: PropTypes.string,
-  description: PropTypes.string,
-  intro: PropTypes.shape({
-    blurbs: PropTypes.array,
-  }),
-  main: PropTypes.shape({
-    heading: PropTypes.string,
-    description: PropTypes.string,
-    image1: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    image2: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    image3: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  }),
-  testimonials: PropTypes.array,
-  fullImage: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  pricing: PropTypes.shape({
-    heading: PropTypes.string,
-    description: PropTypes.string,
-    plans: PropTypes.array,
-  }),
+export interface Frontmatter extends ProductPageTemplateProps {
+  full_image: Img;
 }
 
-const ProductPage = ({ data }) => {
-  const { frontmatter } = data.markdownRemark
+export interface ProductPageProps {
+  data: {
+    markdownRemark: { frontmatter: Frontmatter };
+  };
+}
+
+const ProductPage: React.FC<ProductPageProps> = ({ data }) => {
+  const { frontmatter } = data.markdownRemark;
 
   return (
     <Layout>
@@ -145,18 +169,9 @@ const ProductPage = ({ data }) => {
         pricing={frontmatter.pricing}
       />
     </Layout>
-  )
-}
-
-ProductPage.propTypes = {
-  data: PropTypes.shape({
-    markdownRemark: PropTypes.shape({
-      frontmatter: PropTypes.object,
-    }),
-  }),
-}
-
-export default ProductPage
+  );
+};
+export default ProductPage;
 
 export const productPageQuery = graphql`
   query ProductPage($id: String!) {
@@ -244,4 +259,4 @@ export const productPageQuery = graphql`
       }
     }
   }
-`
+`;

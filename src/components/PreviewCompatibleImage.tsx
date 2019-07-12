@@ -15,7 +15,7 @@ export interface ImageInfo extends Image {
   style?: object;
 }
 
-interface ChildImageSharp {
+export interface ChildImageSharp {
   fluid: FluidObject;
 }
 

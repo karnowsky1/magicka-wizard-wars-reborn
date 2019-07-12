@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-interface Price {
+export interface Price {
   plan: string;
   price: string | number;
   description: string;

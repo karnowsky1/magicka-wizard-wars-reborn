@@ -1,11 +1,20 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { graphql } from 'gatsby'
-import Layout from '../components/Layout'
-import Content, { HTMLContent } from '../components/Content'
+import React from "react";
+import { graphql } from "gatsby";
+import Layout from "../components/Layout";
+import Content, { HTMLContent, ContentProps } from "../components/Content";
 
-export const AboutPageTemplate = ({ title, content, contentComponent }) => {
-  const PageContent = contentComponent || Content
+export interface AboutPageTemplateProps {
+  title: string;
+  content?: string;
+  contentComponent?: React.FC<ContentProps>;
+}
+
+export const AboutPageTemplate: React.FC<AboutPageTemplateProps> = ({
+  title,
+  content,
+  contentComponent
+}) => {
+  const PageContent = contentComponent || Content;
 
   return (
     <section className="section section--gradient">
@@ -22,17 +31,24 @@ export const AboutPageTemplate = ({ title, content, contentComponent }) => {
         </div>
       </div>
     </section>
-  )
+  );
+};
+
+export interface Frontmatter {
+  title: string;
 }
 
-AboutPageTemplate.propTypes = {
-  title: PropTypes.string.isRequired,
-  content: PropTypes.string,
-  contentComponent: PropTypes.func,
+export interface AboutPageProps {
+  data: {
+    markdownRemark: {
+      html: string;
+      frontmatter: Frontmatter;
+    };
+  };
 }
 
-const AboutPage = ({ data }) => {
-  const { markdownRemark: post } = data
+const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
+  const { markdownRemark: post } = data;
 
   return (
     <Layout>
@@ -42,14 +58,10 @@ const AboutPage = ({ data }) => {
         content={post.html}
       />
     </Layout>
-  )
-}
+  );
+};
 
-AboutPage.propTypes = {
-  data: PropTypes.object.isRequired,
-}
-
-export default AboutPage
+export default AboutPage;
 
 export const aboutPageQuery = graphql`
   query AboutPage($id: String!) {
@@ -60,4 +72,4 @@ export const aboutPageQuery = graphql`
       }
     }
   }
-`
+`;
